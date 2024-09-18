@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinner Reservation Form</title>
+    <style>
+        .error {
+            color: rgb(255, 0, 0);
+        }
+        input.invalid {
+            background-color: #ffdddd;
+        }
+        input.valid {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Booking place for your dinner!</h1>
+    
+    <form id="reservationForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter your name" required>
+        <p id="nameError" class="error"></p>
+
+        <label for="phone">Phone number:</label>
+        <input type="text" id="phone" placeholder="Enter phone number" required>
+        <p id="phoneError" class="error"></p>
+
+        <p>Select a time:</p>
+        <input type="radio" id="time1" name="time" value="05:00" checked>
+        <label for="time1">05:00</label><br>
+        <input type="radio" id="time2" name="time" value="06:00">
+        <label for="time2">06:00</label><br>
+        <input type="radio" id="time3" name="time" value="07:00">
+        <label for="time3">07:00</label><br>
+        <input type="radio" id="time4" name="time" value="08:00">
+        <label for="time4">08:00</label><br>
+
+        <p>What would you like to have with us? (As your preferences, Select one or more than one)</p>
+        <input type="checkbox" id="starter" name="option" value="Starters">
+        <label for="starter">Starters</label><br>
+        <input type="checkbox" id="mainCourse" name="option" value="Main Course">
+        <label for="mainCourse">Main Course</label><br>
+        <input type="checkbox" id="desserts" name="option" value="Desserts">
+        <label for="desserts">Desserts</label><br>
+        <input type="checkbox" id="drinks" name="option" value="Drinks">
+        <label for="drinks">Drinks</label><br>
+
+        <button type="submit" id="submit" disabled>Submit</button>
+
+        <p id="message"></p>
+    </form>
+
+    <script>
+        const nameInput = document.getElementById("name");
+        const phoneInput = document.getElementById("phone");
+        const submitButton = document.getElementById("submit");
+        const nameError = document.getElementById("nameError");
+        const phoneError = document.getElementById("phoneError");
+        const message = document.getElementById("message");
+
+function validateName() {
+    const nameValue = nameInput.value.trim();
+    if (!nameValue) {
+        nameError.textContent = "Error: Name is empty.";
+        nameInput.classList.add("invalid");
+        nameInput.classList.remove("valid");
+        return false;
+    }
+    const nameParts = nameValue.split(" ");
+    if (nameParts.length < 2 || nameParts.some(part => part === "")) {
+        nameError.textContent = "Error: First and last names are required.";
+        nameInput.classList.add("invalid");
+        nameInput.classList.remove("valid");
+        return false;
+    }
+    nameError.textContent = "";
+    nameInput.classList.remove("invalid");
+    nameInput.classList.add("valid");
+    return true;
+}
+
+function validatePhone() {
+    const phoneValue = phoneInput.value.trim();
+    const phoneRegex = /^[0-9][a-zA-Z0-9]{5}$/; 
+    if (!phoneValue) {
+        phoneError.textContent = "Error: Phone number is empty.";
+        phoneInput.classList.add("invalid");
+        phoneInput.classList.remove("valid");
+        return false;
+    }
+    if (!phoneRegex.test(phoneValue)) {
+        phoneError.textContent = "Error: Phone number must start with numbers and be exactly 6 characters.";
+        phoneInput.classList.add("invalid");
+        phoneInput.classList.remove("valid");
+        return false;
+    }
+    phoneError.textContent = "";
+    phoneInput.classList.remove("invalid");
+    phoneInput.classList.add("valid");
+    return true;
+}
+
+function enableSubmit() {
+    if (validateName() && validatePhone()) {
+        submitButton.disabled = false;
+    } else {
+        submitButton.disabled = true;
+    }
+}
+
+nameInput.addEventListener("blur", () => {
+    validateName();
+    enableSubmit();
+});
+
+phoneInput.addEventListener("blur", () => {
+    validatePhone();
+    enableSubmit();
+});
+
+
+        document.getElementById("reservationForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const nameValue = nameInput.value.trim();
+            const phoneValue = phoneInput.value.trim();
+            const selectedTime = document.querySelector('input[name="time"]:checked').value;
+            const selectedOptions = Array.from(document.querySelectorAll('input[name="option"]:checked'))
+                                         .map(option => option.value)
+                                         .join(", ");
+
+            message.textContent = `Reservation for: ${nameValue}, Phone: (${phoneValue}) at ${selectedTime}. Starters are: ${selectedOptions}. Thank you for reserving place early, See you at ${selectedTime} PM  !!!`;
+        });
+    </script>
+</body>
+</html>
